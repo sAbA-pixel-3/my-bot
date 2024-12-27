@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from config import ADMIN_ID
 from databases.querysets import *
+from command.keyboards import *
 
 
 
@@ -337,3 +338,112 @@ async def add_desert_price(message: Message, state: FSMContext):
                          f'Цена десерта: {data.get("des_price")} сом\n' 
                          f'Десерт добавлен')
     await state.clear() 
+
+
+
+# DELETE
+@admin_router.message(Command("delete_dish"))
+async def deleting_dish(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите блюдо для удаления:",
+        reply_markup=await get_dishes_admin_kb()) 
+    
+@admin_router.callback_query(F.data.startswith("delete_dish_")) 
+async def delete_selected_dish(callback: CallbackQuery, state: FSMContext):
+    dish_id = int(callback.data.split("_")[2])  
+    dish = await get_dish_by_id(dish_id)  
+    await delete_dish(dish_id)  
+    await callback.message.answer(f"Блюдо '{dish.name}' удалено!")
+    await callback.answer() 
+ 
+
+
+@admin_router.message(Command("delete_sidedish"))
+async def deleting_sidedish(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите гарнир для удаления:",
+        reply_markup=await get_sidedishes_admin_kb()) 
+
+@admin_router.callback_query(F.data.startswith("delete_sidedish_")) 
+async def delete_selected_sidedish(callback: CallbackQuery, state: FSMContext):
+    sidedish_id = int(callback.data.split("_")[2])  
+    sidedish = await get_sidedish_by_id(sidedish_id)
+    await delete_sidedish(sidedish_id)  
+    await callback.message.answer(f"Гарнир '{sidedish.name}' удален!")
+    await callback.answer()
+
+
+
+@admin_router.message(Command("delete_salad"))
+async def deleting_salad(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите салат для удаления:",
+        reply_markup=await get_salad_admin_kb()) 
+
+@admin_router.callback_query(F.data.startswith("delete_salad_")) 
+async def delete_selected_salad(callback: CallbackQuery, state: FSMContext):
+    salad_id = int(callback.data.split("_")[2])  
+    salad = await get_salad_by_id(salad_id)
+    await delete_salad(salad_id)  
+    await callback.message.answer(f"Салат '{salad.name}' удален!")
+    await callback.answer()
+
+
+
+@admin_router.message(Command("delete_drink"))
+async def deleting_drink(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите напиток для удаления:",
+        reply_markup=await get_drink_admin_kb()) 
+
+@admin_router.callback_query(F.data.startswith("delete_drink_")) 
+async def delete_selected_drink(callback: CallbackQuery, state: FSMContext):
+    drink_id = int(callback.data.split("_")[2])  
+    drink = await get_drink_by_id(drink_id)
+    await delete_drink(drink_id)  
+    await callback.message.answer(f"Напиток '{drink.name}' удален!")
+    await callback.answer()
+
+
+
+@admin_router.message(Command("delete_sauce"))
+async def deleting_sauce(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите соус для удаления:",
+        reply_markup=await get_sauce_admin_kb()) 
+
+@admin_router.callback_query(F.data.startswith("delete_sauce_")) 
+async def delete_selected_sauce(callback: CallbackQuery, state: FSMContext):
+    sauce_id = int(callback.data.split("_")[2])  
+    sauce = await get_sauce_by_id(sauce_id)
+    await delete_sauce(sauce_id)  
+    await callback.message.answer(f"Соус '{sauce.name}' удален!")
+    await callback.answer()
+
+
+
+@admin_router.message(Command("delete_desert"))
+async def delete_desert(message: Message, state: FSMContext):
+    if not await check_admin(message):
+        await message.answer("Это команда только для админа!")
+        return
+    await message.answer("Выберите десерт для удаления:",
+        reply_markup=await get_desert_admin_kb()) 
+
+@admin_router.callback_query(F.data.startswith("delete_desert_")) 
+async def delete_selected_desert(callback: CallbackQuery, state: FSMContext):
+    desert_id = int(callback.data.split("_")[2])  
+    desert = await get_desert_by_id(desert_id)
+    await remove_desert(desert_id)   
+    await callback.message.answer(f"Десерт '{desert.name}' удален!")
+    await callback.answer() 

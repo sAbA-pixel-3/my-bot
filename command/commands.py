@@ -14,7 +14,8 @@ from databases.querysets import *
 command_router = Router() 
 @command_router.message(Command('start')) 
 async def start_handler(message: Message):
-    await message.answer(f"Добро пожаловать в ресторан CossoBlanKo! \nЧто бы Вы хотели заказать?", reply_markup=kb)   
+    await message.answer(f"Добро пожаловать в ресторан CossoBlanKo! \nЧто бы Вы хотели заказать?\n"
+                         f"P.S. /search чтобы искать блюдо по названию", reply_markup=kb)   
 
 
 
@@ -492,18 +493,26 @@ async def collect_address_handler(message: Message, state: FSMContext):
 
 
 
+# search by name
+class FindAllDishes(StatesGroup):
+    name = State() 
 
+@command_router.message(Command("search")) 
+async def find_all_dishes_handler(message: Message, state: FSMContext):
+    await message.answer("Введите название блюда: ")
+    await state.set_state(FindAllDishes.name) 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+@command_router.message(FindAllDishes.name) 
+async def find_all_dishes_handler(message: Message, state: FSMContext):
+    search_name = message.text.strip()
+    if search_name: 
+        dishes = await get_all_dishes_by_name(search_name) 
+        if dishes:        
+            kb = InlineKeyboardBuilder() 
+            for d in dishes: 
+                kb.add(InlineKeyboardButton(text=d.name,  
+                    callback_data=f"dish_{d.id}"))
+            await message.answer("Блюдо по вашему запросу: ",
+                reply_markup=kb.adjust(2).as_markup())  
+        else: 
+            await message.answer("Блюдо не найден либо нет в меню!")  

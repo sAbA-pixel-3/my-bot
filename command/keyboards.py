@@ -102,3 +102,54 @@ async def get_desert_order_keyboard(desert_id):
         inline_keyboard=[
             [InlineKeyboardButton(text="В корзину",
                 callback_data=f"add_desert_{desert_id}")]]) 
+
+
+
+# FOR DELETING
+async def get_dishes_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    dishes = await all_dishes()
+    for dish in dishes: 
+        kb.add(InlineKeyboardButton(text=dish.name, 
+            callback_data=f"delete_dish_{dish.id}")) 
+    return kb.adjust(2).as_markup()
+
+async def get_sidedishes_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    sidedishes = await all_sidedishes()
+    for side in sidedishes: 
+        kb.add(InlineKeyboardButton(text=side.name, 
+            callback_data=f"delete_sidedish_{side.id}"))  
+    return kb.adjust(2).as_markup()
+
+async def get_salad_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    salads = await all_salads()
+    for salad in salads: 
+        kb.add(InlineKeyboardButton(text=salad.name, 
+            callback_data=f"delete_salad_{salad.id}")) 
+    return kb.adjust(2).as_markup()
+
+async def get_drink_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    drinks = await all_drinks() 
+    for drink in drinks: 
+        kb.add(InlineKeyboardButton(text=drink.name, 
+            callback_data=f"delete_drink_{drink.id}")) 
+    return kb.adjust(2).as_markup()
+
+async def get_sauce_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    sauces = await all_sauces()
+    for sauce in sauces: 
+        kb.add(InlineKeyboardButton(text=sauce.name, 
+            callback_data=f"delete_sauce_{sauce.id}")) 
+    return kb.adjust(2).as_markup()
+
+async def get_desert_admin_kb():   
+    kb = InlineKeyboardBuilder()
+    deserts = await all_deserts()
+    for desert in deserts: 
+        kb.add(InlineKeyboardButton(text=desert.name, 
+            callback_data=f"delete_desert_{desert.id}")) 
+    return kb.adjust(2).as_markup()

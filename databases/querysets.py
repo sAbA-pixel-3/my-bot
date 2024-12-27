@@ -102,3 +102,67 @@ async def get_desert_by_id(desert_id):
     async with async_session() as session: 
         result = await session.scalar(select(Deserts).where(Deserts.id == desert_id)) 
         return result
+    
+
+
+# delete 
+async def delete_dish(dish_id):
+    async with async_session() as session:
+        dish = await session.scalar(select(Dishes).where(Dishes.id == dish_id))
+        await session.delete(dish)
+        await session.commit()
+
+async def delete_sidedish(sidedish_id):
+    async with async_session() as session:
+        sidedish = await session.scalar(select(SideDishes).where(SideDishes.id == sidedish_id))
+        await session.delete(sidedish) 
+        await session.commit()
+
+async def delete_salad(salad_id):
+    async with async_session() as session:
+        salad = await session.scalar(select(Salads).where(Salads.id == salad_id))
+        await session.delete(salad)
+        await session.commit()
+
+async def delete_drink(drink_id):
+    async with async_session() as session:
+        drink = await session.scalar(select(Drinks).where(Drinks.id == drink_id))
+        await session.delete(drink) 
+        await session.commit()
+
+async def delete_sauce(sauce_id): 
+    async with async_session() as session:
+        sauce = await session.scalar(select(Sauces).where(Sauces.id == sauce_id))
+        await session.delete(sauce)
+        await session.commit()
+
+async def remove_desert(desert_id):
+    async with async_session() as session:
+        desert = await session.scalar(select(Deserts).where(Deserts.id == desert_id))
+        await session.delete(desert) 
+        await session.commit() 
+
+
+
+# search by DISH NAME 
+async def get_all_dishes_by_name(n): 
+    async with async_session() as session:
+        dish = await session.scalars(select(Dishes).where(
+            Dishes.name.ilike(f"%{n}%")))
+            
+        sidedish = await session.scalars(select(SideDishes).where(
+            SideDishes.name.ilike(f"%{n}%")))
+        
+        salad = await session.scalars(select(Salads).where(
+            Salads.name.ilike(f"%{n}%")))
+
+        drink = await session.scalars(select(Drinks).where(
+            Drinks.name.ilike(f"%{n}%")))
+
+        sauce = await session.scalars(select(Sauces).where(
+            Sauces.name.ilike(f"%{n}%"))) 
+
+        desert = await session.scalars(select(Deserts).where(
+            Deserts.name.ilike(f"%{n}%")))
+            
+        return dish.all()+sidedish.all()+salad.all()+drink.all()+sauce.all()+desert.all() 
